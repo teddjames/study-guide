@@ -25,7 +25,7 @@ A full-stack photography portfolio app where users can browse your latest works,
 ##  Project Structure
 
 ```bash
-tjs.lightbox/
+tjs.showcase/
 ├── backend/
 │ ├── app.py # Flask application & routes
 │ ├── config.py # Flask & SQLAlchemy settings
@@ -44,7 +44,6 @@ tjs.lightbox/
 │ └── index.css # Global styles
 ├── package.json # Node dependencies & scripts
 └── node_modules/ # Installed packages (gitignored)
-|-frontend.old
 ```
 
 ---
