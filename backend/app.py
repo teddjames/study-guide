@@ -12,7 +12,7 @@ CORS(app)
 
 @app.route('/')
 def index():
-    return "Welcome to Tedd's Lightbox"
+    return "Welcome to Tedd's Showcase"
 
 @app.route("/signup", methods=["POST"])
 def signup():
