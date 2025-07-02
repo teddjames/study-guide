@@ -1,0 +1,18 @@
+/* General Styles */
+body {
+  margin: 0;
+  font-family: 'Fira Code', 'Consolas', 'Menlo', 'Courier New', monospace;
+  background: linear-gradient(135deg, #0d0d0d, #1c1c1c);
+  color: #d3d3d3;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Code Styles */
+code {
+  font-family: 'Fira Code', 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
+  color: #ff69ff;
+  background-color: rgba(255, 105, 255, 0.1);
+  padding: 0.1rem 0.25rem;
+  border-radius: 3px;
+}
