@@ -1,20 +1,20 @@
 import { useState } from "react";
 
 export default function AddIdeaForm({ workId, onAdd }) {
-  const [idea, setIdea] = useState("");
+  const [tip, setTip] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAdd(workId, idea);
-    setIdea("");
+    onAdd(workId, tip);
+    setTip("");
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input 
-        value={idea}
-        onChange={(e) => setIdea(e.target.value)}
-        placeholder="Add an idea..."
+        value={tip}
+        onChange={(e) => setTip(e.target.value)}
+        placeholder="Add a study tip or note..."
       />
       <button type="submit">Add</button>
     </form>

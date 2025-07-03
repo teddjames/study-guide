@@ -7,37 +7,39 @@ class PhotographyWork(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
+    
     reviews = db.relationship("Review", back_populates="work", cascade="all, delete-orphan")
-    ideas   = db.relationship("Idea",    back_populates="work", cascade="all, delete-orphan")
+    ideas = db.relationship("Idea", back_populates="work", cascade="all, delete-orphan")
 
     @hybrid_property
     def average_rating(self):
         if self.reviews:
-            return sum(r.rating for r in self.reviews) / len(self.reviews)
+            return round(sum(r.rating for r in self.reviews) / len(self.reviews), 2)
         return None
 
 class Review(db.Model):
     __tablename__ = "reviews"
-    id       = db.Column(db.Integer, primary_key=True)
-    work_id  = db.Column(db.Integer, db.ForeignKey("photography_works.id"))
-    rating   = db.Column(db.Integer, nullable=False)
-    comment  = db.Column(db.String)
-    work     = db.relationship("PhotographyWork", back_populates="reviews")
+    id = db.Column(db.Integer, primary_key=True)
+    work_id = db.Column(db.Integer, db.ForeignKey("photography_works.id"))
+    rating = db.Column(db.Integer, nullable=False)
+    comment = db.Column(db.String)
+
+    work = db.relationship("PhotographyWork", back_populates="reviews")
 
     @validates("rating")
     def validate_rating(self, key, value):
         if not (1 <= value <= 5):
-            raise ValueError("Rating must be 1–5.")
+            raise ValueError("Rating must be between 1 and 5.")
         return value
 
 class Idea(db.Model):
     __tablename__ = "ideas"
-    id          = db.Column(db.Integer, primary_key=True)
-    work_id     = db.Column(db.Integer, db.ForeignKey("photography_works.id"))
-    title       = db.Column(db.String, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    work_id = db.Column(db.Integer, db.ForeignKey("photography_works.id"))
+    title = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
-    work        = db.relationship("PhotographyWork", back_populates="ideas")
 
+    work = db.relationship("PhotographyWork", back_populates="ideas")
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

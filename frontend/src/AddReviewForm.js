@@ -11,20 +11,24 @@ export default function AddReviewForm({ workId, reload }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ work_id: workId, rating, comment }),
     });
-    setComment(""); setRating(5);
+    setComment("");
+    setRating(5);
     reload();
   };
 
   return (
     <form onSubmit={submit} style={{ marginTop: "0.5rem" }}>
       <input
-        type="number" min="1" max="5"
+        type="number"
+        min="1"
+        max="5"
         value={rating}
         onChange={(e) => setRating(+e.target.value)}
         style={{ width: "3rem" }}
       />
       <input
-        type="text" placeholder="Comment"
+        type="text"
+        placeholder="Reflection or comment"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         style={{ marginLeft: "0.5rem" }}
