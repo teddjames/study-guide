@@ -1,128 +1,133 @@
-# tjs.showcase
+# Study Guide 
+A full‑stack study‑guide & photo‑showcase app built with a Flask API (SQLite + SQLAlchemy) and a React frontend.
+Users can sign up, log in, log out, browse works / study‑topics, filter by title, leave 1–5 ★ reflections, and suggest study tips or creative ideas.
 
-A full-stack photography portfolio app where users can browse your latest works, filter by title, leave reviews, and suggest creative ideas. Built with a Flask/SQLAlchemy backend and a React frontend.
+## Features
+User Authentication
+– Sign up with username & password
+– Log in and out
+– Session persists on page reload
 
----
+View Photography Works / Study Topics
+– Browse all works with title, description, and average rating
+– Filter by title
 
-##   Features
+Reviews / Reflections
+– Add 1–5 star reflections with optional comments
+– Delete reflections
+– Average rating updates automatically
 
-- **View Photography Works**  
-  Fetch and display a list of all your photos, with title, description and average rating.
+Ideas / Tips
+– Submit study tips or creative ideas for each work
+– Delete tips
 
-- **Filter Works**  
-  Live search by work title.
+Frontend / Backend Integration
+– Secure cookie-based sessions
+– Cross-Origin support (CORS with credentials)
 
-- **Reviews**  
-  — Create, list and delete 1–5 star reviews with comments.  
-  — Average rating is calculated on the fly.
 
-- **Ideas**  
-  — Users can submit “ideas” or inspirations for each work.  
-  — Create, list and delete ideas.
-
----
-
-##  Project Structure
-
+## Project Structure
 ```bash
-tjs.showcase/
+tjs‑showcase/
 ├── backend/
-│ ├── app.py # Flask application & routes
-│ ├── config.py # Flask & SQLAlchemy settings
-│ ├── db.py # SQLAlchemy db instance
-│ ├── models.py # ORM model definitions
-│ ├── seed.py # Script to create & populate the DB
-│ ├── requirements.txt # Python dependencies
-│ └── venv/ # Virtual environment (gitignored)
+│   ├── app.py                # Flask app, routes, CORS, sessions
+│   ├── config.py             # DB & secret‑key settings
+│   ├── db.py                 # SQLAlchemy instance
+│   ├── models.py             # User, PhotographyWork, Review, Idea
+│   ├── seed.py               # Populate DB with demo data
+│   ├── requirements.txt
+│   └── venv/                 # (git‑ignored)
 └── frontend/
-├── public/
-│ └── index.html # HTML template
-├── src/
-│ ├── components/ # Reusable React components
-│ ├── App.js # Main React component
-│ ├── index.js # React entry point
-│ └── index.css # Global styles
-├── package.json # Node dependencies & scripts
-└── node_modules/ # Installed packages (gitignored)
+    ├── public/index.html
+    └── src/
+        ├── App.js            # Handles auth flow + routes
+        ├── LoginForm.js
+        ├── SignupForm.js
+        ├── WorksList.js
+        ├── WorkCard.js
+        ├── Filter.js
+        ├── index.js
+        └── index.css
 ```
 
----
 
-##  Backend Setup
+## Auth Flow
+1. Sign Up → POST /signup
 
-1. **Enter the backend folder**  
+On success, backend sets session["user_id"] and returns the user object.
+
+Frontend stores user in React state.
+
+2.Login → POST /auth/login
+
+Credentials sent with credentials:"include".
+
+On 200, backend sets session["user_id"]; frontend saves user.
+
+3. Session Check → GET /check_session
+
+Called on page load; restores user if cookie is present.
+
+4. Logout → DELETE /logout
+
+Clears session cookie on backend; frontend resets user state.
+
+All cookies are SameSite=Lax (default) and accepted by the React app when credentials:"include" is used.
+
+## Backend Setup
 ```bash
 cd backend
-```
-
-2. **Create & activate a virtualenv**
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-3. **Install Python dependencies**
-```bash
+python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-```
-
-4. **Seed the database**
-```bash
-python seed.py
-```
-5. **Set environment variables & run**
-```bash
+python seed.py            # populate DB
 export FLASK_APP=app.py
-export FLASK_ENV=development
-flask run
-The API will be live at http://127.0.0.1:5000.
+flask run --port 5000
+API now runs at http://localhost:5000
 ```
 
-6. **Test an endpoint**
-```bash
-curl http://127.0.0.1:5000/works
-You should receive a JSON array of seeded works.
-```
 
-## Frontend Setup
-1. **Enter the frontend folder**
-
+## Frontend Setup
 ```bash
-cd ../frontend
-```
-
-2. **Install Node dependencies**
-```bash
+cd frontend
 npm install
+npm start          # opens http://localhost:3000
 ```
 
-3. **Start the React development server**
-```bash
-npm start
-The app will open at http://localhost:3000.
-```
+Add "proxy": "http://localhost:5000" in package.json if you prefer to omit full URLs in fetch calls.
 
-4. **Verify functionality**
+## Key API Endpoints
 
--The page title “My Photography Works” appears.
-
--Your seeded works load.
-
--You can filter, add/delete reviews & ideas.
-
-## API Endpoints
-| Method | Path                   | Description                         |
-| ------ | ---------------------- | ----------------------------------- |
-| GET    | `/works`               | List all works (with reviews/ideas) |
-| POST   | `/reviews`             | Create a review                     |
-| DELETE | `/reviews/<review_id>` | Delete a review                     |
-| POST   | `/ideas`               | Create an idea                      |
-| DELETE | `/ideas/<idea_id>`     | Delete an idea                      |
+| Method | Path               | Purpose                                               |
+|--------|--------------------|--------------------------------------------------------|
+| POST   | `/signup`          | Register new user (auto‑login)                        |
+| POST   | `/auth/login`      | Log in (expects JSON `{username, password}`)         |
+| DELETE | `/logout`          | Log out (clears session)                              |
+| GET    | `/check_session`   | Return current user if logged in                      |
+| GET    | `/works`           | List all works (includes reviews & ideas)             |
+| POST   | `/reviews`         | Create reflection `{work_id, rating, comment}`        |
+| DELETE | `/reviews/<id>`    | Delete reflection                                     |
+| POST   | `/ideas`           | Create tip `{work_id, title, description}`            |
+| DELETE | `/ideas/<id>`      | Delete tip                                            |
 
 
-## Tech Stack
-Backend: Python · Flask · Flask-SQLAlchemy · Flask-CORS · SQLite
+## Tech Stack
+Layer	Tools
+Backend	Python · Flask · Flask‑SQLAlchemy · Flask‑CORS · SQLite
+Auth	Flask sessions (cookie‑based)
+Frontend	React 18 · Fetch API (credentials:"include")
+Styling	Plain CSS — retro neon “Codédex” vibe
 
-Frontend: JavaScript · React · Create React App
+## Quick Test Checklist
+Sign Up ➜ User is auto‑logged in.
 
-Styling: Custom CSS (dark neon “Codédex” theme)
+Log Out ➜ Page returns to auth screen.
 
+Log In with same credentials ➜ Gallery loads.
+
+Add / delete reflections & tips ➜ Average score updates.
+
+Refresh page ➜ Session persists (still logged in).
+
+CORS errors: none in browser console.
+
+Happy studying & showcasing!
