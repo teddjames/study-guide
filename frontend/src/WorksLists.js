@@ -1,10 +1,10 @@
-import TopicCard from "./WorkCard"; // still using the same file name for now
+import WorkCard from "./WorkCard";
 
-export default function WorksList({ works, setWorks }) {
+export default function WorksLists({ works, setWorks }) {
   return (
     <div className="works-grid">
       {works.map((topic) => (
-        <TopicCard key={topic.id} work={topic} setWorks={setWorks} />
+        <WorkCard key={topic.id} work={topic} setWorks={setWorks} />
       ))}
     </div>
   );

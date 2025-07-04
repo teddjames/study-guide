@@ -1,13 +1,16 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session, make_response
 from flask_cors import CORS
+from flask_session import Session
 from config import Config
-from db import db
+from db import db, migrate
 from models import PhotographyWork, Review, Idea, User
 
 app = Flask(__name__)
 app.config.from_object(Config)
+server_session = Session(app)
 db.init_app(app)
-CORS(app)
+migrate.init_app(app, db)
+CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
 @app.route('/')
 def index():
@@ -25,24 +28,38 @@ def signup():
     if User.query.filter_by(username=username).first():
         return jsonify({"error": "Username already exists"}), 409
 
-    user = User(username=username, password=password)
+    user = User(
+        username=username
+    )
+    user.password = password
     db.session.add(user)
     db.session.commit()
-    return jsonify({"message": "User created", "user": {"id": user.id, "username": user.username}}), 201
+
+    session['user_id'] = user.id
+    session.permanent = True
+    return jsonify({"message": "User created", "user": user.to_dict()}), 201
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+    
+    user = User.query.filter_by(username=username).first()
+
+    if not user or not user.authenticate(password):
+        return {"error": "Invalid username or password."}, 401
+    
+    session['user_id'] = user.id
+    session.permanent = True
+
+    return make_response({"user": user.to_dict()}), 201
+    
 
 @app.route("/works", methods=["GET"])
 def get_works():
     works = PhotographyWork.query.all()
-    return jsonify([
-        {
-            "id": w.id,
-            "title": w.title,
-            "description": w.description,
-            "average_rating": w.average_rating,
-            "reviews": [{"id": r.id, "rating": r.rating, "comment": r.comment} for r in w.reviews],
-            "ideas": [{"id": i.id, "title": i.title, "description": i.description} for i in w.ideas]
-        } for w in works
-    ])
+    return jsonify([w.to_dict() for w in works]), 200
 
 @app.route("/reviews", methods=["POST"])
 def add_review():
@@ -54,7 +71,7 @@ def add_review():
     )
     db.session.add(review)
     db.session.commit()
-    return jsonify({"message": "Review added"}), 201
+    return jsonify({"message": "Review added", "review": review.to_dict()}), 201
 
 @app.route("/reviews/<int:id>", methods=["DELETE"])
 def del_review(id):
