@@ -8,9 +8,6 @@ User Authentication
 – Log in and out
 – Session persists on page reload
 
-View Photography Works / Study Topics
-– Browse all works with title, description, and average rating
-– Filter by title
 
 Reviews / Reflections
 – Add 1–5 star reflections with optional comments
