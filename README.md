@@ -1,8 +1,8 @@
 # Study Guide 
-A full‑stack study‑guide & photo‑showcase app built with a Flask API (SQLite + SQLAlchemy) and a React frontend.
-Users can sign up, log in, log out, browse works / study‑topics, filter by title, leave 1–5 ★ reflections, and suggest study tips or creative ideas.
+A full‑stack study guide app built with a Flask API (SQLite + SQLAlchemy) and a React frontend.
+This app is designed for students to perform various tasks, including signing up, logging in, logging out, browsing works/study topics, filtering by title, leaving 1–5 star reflections, and suggesting study tips or creative ideas.
 
-## Features
+## Features
 User Authentication
 – Sign up with username & password
 – Log in and out
@@ -26,7 +26,7 @@ Frontend / Backend Integration
 – Cross-Origin support (CORS with credentials)
 
 
-## Project Structure
+## Project Structure
 ```bash
 tjs‑showcase/
 ├── backend/
@@ -51,7 +51,7 @@ tjs‑showcase/
 ```
 
 
-## Auth Flow
+## Auth Flow
 1. Sign Up → POST /signup
 
 On success, backend sets session["user_id"] and returns the user object.
@@ -74,7 +74,7 @@ Clears session cookie on backend; frontend resets user state.
 
 All cookies are SameSite=Lax (default) and accepted by the React app when credentials:"include" is used.
 
-## Backend Setup
+## Backend Setup
 ```bash
 cd backend
 python -m venv venv && source venv/bin/activate
@@ -86,7 +86,7 @@ API now runs at http://localhost:5000
 ```
 
 
-## Frontend Setup
+## Frontend Setup
 ```bash
 cd frontend
 npm install
@@ -110,14 +110,14 @@ Add "proxy": "http://localhost:5000" in package.json if you prefer to omit f
 | DELETE | `/ideas/<id>`      | Delete tip                                            |
 
 
-## Tech Stack
+## Tech Stack
 Layer	Tools
 Backend	Python · Flask · Flask‑SQLAlchemy · Flask‑CORS · SQLite
 Auth	Flask sessions (cookie‑based)
 Frontend	React 18 · Fetch API (credentials:"include")
 Styling	Plain CSS — retro neon “Codédex” vibe
 
-## Quick Test Checklist
+## Quick Test Checklist
 Sign Up ➜ User is auto‑logged in.
 
 Log Out ➜ Page returns to auth screen.
@@ -130,4 +130,4 @@ Refresh page ➜ Session persists (still logged in).
 
 CORS errors: none in browser console.
 
-Happy studying & showcasing!
+Happy studying!
